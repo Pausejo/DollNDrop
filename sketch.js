@@ -19,39 +19,39 @@ function preload() {
 }
 
 function setup() {
-  let canvas = createCanvas(1024, 1024);
+  let canvas = createCanvas(650, 700);
   canvas.parent('canvas-container');
   
   // Posicionar partes iniciales en la cara
   ojos.forEach((ojo, index) => {
-    ojo.x = 100 + index * 700;  // Ajustar según el espacio deseado entre ojos
-    ojo.y = 400;
+    ojo.x = 80 + index * 150;  // Ajustar según el espacio deseado entre ojos
+    ojo.y = 20;
     ojo.width = 140;
     ojo.height = 140;
-    ojo.targetX = 330 + index * 240; // Posición objetivo para los ojos en la cara
-    ojo.targetY = 440;
+    ojo.targetX = 150 + index * 240; // Posición objetivo para los ojos en la cara
+    ojo.targetY = 310;
     ojo.initialX = ojo.x;
     ojo.initialY = ojo.y;
   });
 
   bocas.forEach((boca, index) => {
-    boca.x = 350 + index * 160;  // Ajustar según el espacio deseado entre bocas
-    boca.y = 800;
+    boca.x = 370 + index * 100;  // Ajustar según el espacio deseado entre bocas
+    boca.y = 90;
     boca.width = 100;
     boca.height = 50;
-    boca.targetX = 475; // Posición objetivo para la boca en la cara
-    boca.targetY = 550;
+    boca.targetX = 290; // Posición objetivo para la boca en la cara
+    boca.targetY = 440;
     boca.initialX = boca.x;
     boca.initialY = boca.y;
   });
 
   cejas.forEach((ceja, index) => {
-    ceja.x = 350 + index * 140;  // Ajustar según el espacio deseado entre cejas
-    ceja.y = 50;
+    ceja.x = 370 + index * 120;  // Ajustar según el espacio deseado entre cejas
+    ceja.y = 20;
     ceja.width = 100;
     ceja.height = 50;
-    ceja.targetX = 342 + index * 250; // Posición objetivo para las cejas en la cara
-    ceja.targetY = 410;
+    ceja.targetX = 162 + index * 250; // Posición objetivo para las cejas en la cara
+    ceja.targetY = 280;
     ceja.initialX = ceja.x;
     ceja.initialY = ceja.y;
   });
@@ -61,7 +61,7 @@ function draw() {
   background(240);
 
   // Dibuja la cara
-  image(cara, 280, 280, 460, 460);
+  image(cara, 100, 170, 460, 460);
 
   // Dibuja las partes de la cara
   ojos.forEach(ojo => {
