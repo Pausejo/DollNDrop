@@ -7,6 +7,7 @@ let offsetX, offsetY;
 let mySound;
 let okSound;
 let startButton;
+let resetButton, nextButton;
 
 function preload() {
   soundFormats('mp3', 'wav');
@@ -37,6 +38,21 @@ function setup() {
   startButton.position(windowWidth / 2 - 150, windowHeight - 150);
   startButton.mousePressed(startGame);
   
+  // Crear botones de reiniciar y siguiente
+  if (!resetButton) {
+    resetButton = createButton('Reiniciar');
+    resetButton.position(windowWidth / 2 - 100, windowHeight - 50);
+    resetButton.mousePressed(startGame);
+  }
+  
+  if (!nextButton) {
+    nextButton = createButton('Siguiente');
+    nextButton.position(windowWidth / 2 + 20, windowHeight - 50);
+  }
+
+  resetButton.hide();
+  nextButton.hide();
+  
   // Inicialmente ocultar las partes de la cara
   resetParts();
 }
@@ -65,6 +81,15 @@ function draw() {
     arrastrando.x = mouseX + offsetX;
     arrastrando.y = mouseY + offsetY;
   }
+
+  // Dibujar las letras desordenadas si todas las partes están en su lugar
+  if (allPartsPlaced()) {
+    resetButton.show();
+    nextButton.show();
+  } else if (resetButton && nextButton) {
+    resetButton.hide();
+    nextButton.hide();
+  }
 }
 
 function startGame() {
@@ -79,7 +104,7 @@ function startGame() {
     ojo.y = random(0, height - ojo.height);
     ojo.initialX = ojo.x;
     ojo.initialY = ojo.y;
-    ojo.locked = false; // Inicialmente, las partes no están bloqueadas
+    ojo.colocado = false; // Inicialmente, las partes no están bloqueadas
   });
 
   bocas.forEach((boca, index) => {
@@ -87,7 +112,7 @@ function startGame() {
     boca.y = random(0, height - boca.height);
     boca.initialX = boca.x;
     boca.initialY = boca.y;
-    boca.locked = false; // Inicialmente, las partes no están bloqueadas
+    boca.colocado = false; // Inicialmente, las partes no están bloqueadas
   });
 
   cejas.forEach((ceja, index) => {
@@ -95,7 +120,7 @@ function startGame() {
     ceja.y = random(0, height - ceja.height);
     ceja.initialX = ceja.x;
     ceja.initialY = ceja.y;
-    ceja.locked = false; // Inicialmente, las partes no están bloqueadas
+    ceja.colocado = false; // Inicialmente, las partes no están bloqueadas
   });
 }
 
@@ -126,20 +151,28 @@ function resetParts() {
     ceja.targetX = 162 + index * 250; // Posición objetivo para las cejas en la cara
     ceja.targetY = 290;
   });
+  console.log(ojos)
+}
+
+function allPartsPlaced() {
+  return ojos.every(ojo => ojo.colocado) &&
+         bocas.some(boca => boca.colocado) &&
+         cejas.every(ceja => ceja.colocado);
 }
 
 function mousePressed() {
   arrastrando = null;
 
-  // Verifica si se hace clic en alguna parte de la cara
-  [...ojos, ...bocas, ...cejas].forEach(parte => {
-    if (!parte.locked && mouseX > parte.x && mouseX < parte.x + parte.width &&
-        mouseY > parte.y && mouseY < parte.y + parte.height) {
-      arrastrando = parte;
-      offsetX = parte.x - mouseX;
-      offsetY = parte.y - mouseY;
-    }
-  });
+// Verifica si se hace clic en alguna parte de la cara que no esté colocada
+[...ojos, ...bocas, ...cejas].forEach(parte => {
+  if (!parte.colocado && 
+      mouseX > parte.x && mouseX < parte.x + parte.width &&
+      mouseY > parte.y && mouseY < parte.y + parte.height) {
+    arrastrando = parte;
+    offsetX = parte.x - mouseX;
+    offsetY = parte.y - mouseY;
+  }
+});
 }
 
 function mouseReleased() {
@@ -167,7 +200,7 @@ function mouseReleased() {
     if (dist(arrastrando.x, arrastrando.y, arrastrando.targetX, arrastrando.targetY) < 50) {
       arrastrando.x = arrastrando.targetX;
       arrastrando.y = arrastrando.targetY;
-      arrastrando.locked = true; // Bloquear la parte en su posición final
+      arrastrando.colocado = true;
       okSound.play();
     } else if (colision) {
       // Vuelve a la posición inicial si hay colisión
