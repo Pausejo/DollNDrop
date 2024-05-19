@@ -151,7 +151,6 @@ function resetParts() {
     ceja.targetX = 162 + index * 250; // Posición objetivo para las cejas en la cara
     ceja.targetY = 290;
   });
-  console.log(ojos)
 }
 
 function allPartsPlaced() {
