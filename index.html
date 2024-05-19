@@ -13,5 +13,14 @@
     <h1>Doll & drop</h1>
     <div id="canvas-container"></div>
   </div>
+
+  
+  <script>
+    document.addEventListener('touchmove', function(event) {
+      if (window.scrollY === 0) {
+        event.preventDefault();
+      }
+    }, { passive: false });
+  </script>
 </body>
 </html>
