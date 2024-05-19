@@ -6,11 +6,12 @@ let arrastrando = null;
 let offsetX, offsetY;
 let mySound;
 let okSound;
+let startButton;
 
 function preload() {
-  soundFormats('mp3','wav');
-  mySound = loadSound('assets/main.mp3')
-  okSound = loadSound('assets/knock.wav')
+  soundFormats('mp3', 'wav');
+  mySound = loadSound('assets/main.mp3');
+  okSound = loadSound('assets/knock.wav');
   
   // Cargar la imagen de la cara
   cara = loadImage('https://i.ibb.co/XpZYxWp/OIG2.jpg');
@@ -25,43 +26,19 @@ function preload() {
 }
 
 function setup() {
-  mySound.play();
   let canvas = createCanvas(windowWidth, windowHeight);
   canvas.parent('canvas-container');
   
-  // Posicionar partes iniciales en la cara
-  ojos.forEach((ojo, index) => {
-    ojo.x = 80 + index * 150;  // Ajustar según el espacio deseado entre ojos
-    ojo.y = 20;
-    ojo.width = 140;
-    ojo.height = 140;
-    ojo.targetX = 150 + index * 240; // Posición objetivo para los ojos en la cara
-    ojo.targetY = 320;
-    ojo.initialX = ojo.x;
-    ojo.initialY = ojo.y;
-  });
-
-  bocas.forEach((boca, index) => {
-    boca.x = 370 + index * 100;  // Ajustar según el espacio deseado entre bocas
-    boca.y = 90;
-    boca.width = 100;
-    boca.height = 50;
-    boca.targetX = 290; // Posición objetivo para la boca en la cara
-    boca.targetY = 450;
-    boca.initialX = boca.x;
-    boca.initialY = boca.y;
-  });
-
-  cejas.forEach((ceja, index) => {
-    ceja.x = 370 + index * 120;  // Ajustar según el espacio deseado entre cejas
-    ceja.y = 20;
-    ceja.width = 100;
-    ceja.height = 50;
-    ceja.targetX = 162 + index * 250; // Posición objetivo para las cejas en la cara
-    ceja.targetY = 290;
-    ceja.initialX = ceja.x;
-    ceja.initialY = ceja.y;
-  });
+  // Crear el botón para empezar el juego
+  startButton = createButton('Empezar');
+  startButton.size(200, 100);
+  startButton.style("font-family", "Comic Sans MS");
+  startButton.style("font-size", "32px");
+  startButton.position(windowWidth / 2 - 150, windowHeight - 150);
+  startButton.mousePressed(startGame);
+  
+  // Inicialmente ocultar las partes de la cara
+  resetParts();
 }
 
 function draw() {
@@ -90,12 +67,73 @@ function draw() {
   }
 }
 
+function startGame() {
+  if (!mySound.isPlaying()){
+    mySound.play()
+  }
+  startButton.hide()
+  
+  // Posicionar partes iniciales en la cara de manera aleatoria
+  ojos.forEach((ojo, index) => {
+    ojo.x = random(0, width - ojo.width);
+    ojo.y = random(0, height - ojo.height);
+    ojo.initialX = ojo.x;
+    ojo.initialY = ojo.y;
+    ojo.locked = false; // Inicialmente, las partes no están bloqueadas
+  });
+
+  bocas.forEach((boca, index) => {
+    boca.x = random(0, width - boca.width);
+    boca.y = random(0, height - boca.height);
+    boca.initialX = boca.x;
+    boca.initialY = boca.y;
+    boca.locked = false; // Inicialmente, las partes no están bloqueadas
+  });
+
+  cejas.forEach((ceja, index) => {
+    ceja.x = random(0, width - ceja.width);
+    ceja.y = random(0, height - ceja.height);
+    ceja.initialX = ceja.x;
+    ceja.initialY = ceja.y;
+    ceja.locked = false; // Inicialmente, las partes no están bloqueadas
+  });
+}
+
+function resetParts() {
+  ojos.forEach((ojo, index) => {
+    ojo.x = -ojo.width;
+    ojo.y = -ojo.height;
+    ojo.width = 140;
+    ojo.height = 140;
+    ojo.targetX = 150 + index * 240; // Posición objetivo para los ojos en la cara
+    ojo.targetY = 330;
+  });
+
+  bocas.forEach((boca, index) => {
+    boca.x = -boca.width;
+    boca.y = -boca.height;
+    boca.width = 100;
+    boca.height = 50;
+    boca.targetX = 290; // Posición objetivo para la boca en la cara
+    boca.targetY = 430;
+  });
+
+  cejas.forEach((ceja, index) => {
+    ceja.x = -ceja.width;
+    ceja.y = -ceja.height;
+    ceja.width = 100;
+    ceja.height = 50;
+    ceja.targetX = 162 + index * 250; // Posición objetivo para las cejas en la cara
+    ceja.targetY = 290;
+  });
+}
+
 function mousePressed() {
   arrastrando = null;
 
   // Verifica si se hace clic en alguna parte de la cara
   [...ojos, ...bocas, ...cejas].forEach(parte => {
-    if (mouseX > parte.x && mouseX < parte.x + parte.width &&
+    if (!parte.locked && mouseX > parte.x && mouseX < parte.x + parte.width &&
         mouseY > parte.y && mouseY < parte.y + parte.height) {
       arrastrando = parte;
       offsetX = parte.x - mouseX;
@@ -110,19 +148,17 @@ function mouseReleased() {
     let colision = false;
     let partes = [];
 
-    if (arrastrando === ojos[0] || arrastrando === ojos[1]) {
+    if (ojos.includes(arrastrando)) {
       partes = ojos;
-    } else if (arrastrando === bocas[0] || arrastrando === bocas[1]) {
+    } else if (bocas.includes(arrastrando)) {
       partes = bocas;
-    } else if (arrastrando === cejas[0] || arrastrando === cejas[1]) {
+    } else if (cejas.includes(arrastrando)) {
       partes = cejas;
     }
 
     partes.forEach(parte => {
       if (parte !== arrastrando && 
           dist(arrastrando.x, arrastrando.y, parte.x, parte.y) < 50) {
-        parte.x = parte.initialX;
-        parte.y = parte.initialY;
         colision = true;
       }
     });
@@ -131,9 +167,14 @@ function mouseReleased() {
     if (dist(arrastrando.x, arrastrando.y, arrastrando.targetX, arrastrando.targetY) < 50) {
       arrastrando.x = arrastrando.targetX;
       arrastrando.y = arrastrando.targetY;
-      okSound.play()
+      arrastrando.locked = true; // Bloquear la parte en su posición final
+      okSound.play();
+    } else if (colision) {
+      // Vuelve a la posición inicial si hay colisión
+      arrastrando.x = arrastrando.initialX;
+      arrastrando.y = arrastrando.initialY;
     } else {
-      // Vuelve a la posición inicial si no está cerca de la posición objetivo o si hay colisión
+      // Vuelve a la posición inicial si no está cerca de la posición objetivo
       arrastrando.x = arrastrando.initialX;
       arrastrando.y = arrastrando.initialY;
     }
