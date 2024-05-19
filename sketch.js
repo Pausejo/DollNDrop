@@ -4,8 +4,14 @@ let bocas = [];
 let cejas = [];
 let arrastrando = null;
 let offsetX, offsetY;
+let mySound;
+let okSound;
 
 function preload() {
+  soundFormats('mp3','wav');
+  mySound = loadSound('assets/main.mp3')
+  okSound = loadSound('assets/knock.wav')
+  
   // Cargar la imagen de la cara
   cara = loadImage('https://i.ibb.co/XpZYxWp/OIG2.jpg');
   
@@ -19,7 +25,8 @@ function preload() {
 }
 
 function setup() {
-  let canvas = createCanvas(650, 700);
+  mySound.play();
+  let canvas = createCanvas(windowWidth, windowHeight);
   canvas.parent('canvas-container');
   
   // Posicionar partes iniciales en la cara
@@ -124,6 +131,7 @@ function mouseReleased() {
     if (dist(arrastrando.x, arrastrando.y, arrastrando.targetX, arrastrando.targetY) < 50) {
       arrastrando.x = arrastrando.targetX;
       arrastrando.y = arrastrando.targetY;
+      okSound.play()
     } else {
       // Vuelve a la posición inicial si no está cerca de la posición objetivo o si hay colisión
       arrastrando.x = arrastrando.initialX;
