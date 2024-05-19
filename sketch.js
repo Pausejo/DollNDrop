@@ -41,13 +41,20 @@ function setup() {
   // Crear botones de reiniciar y siguiente
   if (!resetButton) {
     resetButton = createButton('Reiniciar');
-    resetButton.position(windowWidth / 2 - 100, windowHeight - 50);
+    resetButton.size(200, 100);
+    resetButton.style("font-family", "Comic Sans MS");
+    resetButton.style("font-size", "32px");
+    resetButton.position(windowWidth / 2 - 200, windowHeight - 150);
     resetButton.mousePressed(startGame);
   }
   
   if (!nextButton) {
     nextButton = createButton('Siguiente');
-    nextButton.position(windowWidth / 2 + 20, windowHeight - 50);
+    nextButton.size(200, 100);
+    nextButton.style("font-family", "Comic Sans MS");
+    nextButton.style("font-size", "32px");
+    nextButton.position(windowWidth / 2 + 20, windowHeight - 150);
+    nextButton.mousePressed(()=>{alert('not implemented')});
   }
 
   resetButton.hide();
