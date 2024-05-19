@@ -29,7 +29,7 @@ function setup() {
     ojo.width = 140;
     ojo.height = 140;
     ojo.targetX = 150 + index * 240; // Posición objetivo para los ojos en la cara
-    ojo.targetY = 310;
+    ojo.targetY = 320;
     ojo.initialX = ojo.x;
     ojo.initialY = ojo.y;
   });
@@ -40,7 +40,7 @@ function setup() {
     boca.width = 100;
     boca.height = 50;
     boca.targetX = 290; // Posición objetivo para la boca en la cara
-    boca.targetY = 440;
+    boca.targetY = 450;
     boca.initialX = boca.x;
     boca.initialY = boca.y;
   });
@@ -51,7 +51,7 @@ function setup() {
     ceja.width = 100;
     ceja.height = 50;
     ceja.targetX = 162 + index * 250; // Posición objetivo para las cejas en la cara
-    ceja.targetY = 280;
+    ceja.targetY = 290;
     ceja.initialX = ceja.x;
     ceja.initialY = ceja.y;
   });
